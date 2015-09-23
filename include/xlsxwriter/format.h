@@ -63,7 +63,6 @@
 #include <stdint.h>
 #include <string.h>
 #include "hash_table.h"
-#include "xlsxwriter/third_party/queue.h"
 
 #include "common.h"
 
@@ -419,7 +418,9 @@ typedef struct lxw_format {
     uint8_t color_indexed;
     uint8_t font_only;
 
-    STAILQ_ENTRY (lxw_format) list_pointers;
+    struct {
+        struct lxw_format *stqe_next; /* next element */
+    } list_pointers;
 } lxw_format;
 
 /*

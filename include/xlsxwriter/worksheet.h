@@ -117,9 +117,18 @@ enum cell_types {
 };
 
 /* Define the queue.h TAILQ structs for the list head types. */
-TAILQ_HEAD(lxw_table_cells, lxw_cell);
-TAILQ_HEAD(lxw_table_rows, lxw_row);
-STAILQ_HEAD(lxw_merged_ranges, lxw_merged_range);
+struct lxw_table_cells {
+    struct lxw_cell *tqh_first; /* first element */
+    struct lxw_cell **tqh_last; /* addr of last next element */
+};
+struct lxw_table_rows {
+    struct lxw_row *tqh_first; /* first element */
+    struct lxw_row **tqh_last; /* addr of last next element */
+};
+struct lxw_merged_ranges {
+    struct lxw_merged_range *stqh_first;/* first element */
+    struct lxw_merged_range **stqh_last;/* addr of last next element */
+};
 
 /**
  * @brief Options for rows and columns.
@@ -157,7 +166,9 @@ typedef struct lxw_merged_range {
     lxw_col_t first_col;
     lxw_col_t last_col;
 
-    STAILQ_ENTRY (lxw_merged_range) list_pointers;
+    struct {
+        struct lxw_merged_range *stqe_next; /* next element */
+    } list_pointers;
 } lxw_merged_range;
 
 typedef struct lxw_repeat_rows {
@@ -292,7 +303,9 @@ typedef struct lxw_worksheet {
 
     struct lxw_rel_tuples *external_hyperlinks;
 
-    STAILQ_ENTRY (lxw_worksheet) list_pointers;
+    struct {
+        struct lxw_worksheet *stqe_next; /* next element */
+    } list_pointers;
 
 } lxw_worksheet;
 
@@ -323,7 +336,10 @@ typedef struct lxw_row {
     struct lxw_table_cells *cells;
 
     /* List pointers for queue.h. */
-    TAILQ_ENTRY (lxw_row) list_pointers;
+    struct {
+        struct lxw_row *tqe_next;  /* next element */
+        struct lxw_row **tqe_prev; /* address of previous next element */
+    } list_pointers;
 } lxw_row;
 
 /* Struct to represent a worksheet cell. */
@@ -344,7 +360,10 @@ typedef struct lxw_cell {
     char *user_data2;
 
     /* List pointers for queue.h. */
-    TAILQ_ENTRY (lxw_cell) list_pointers;
+    struct {
+        struct lxw_cell *tqe_next;  /* next element */
+        struct lxw_cell **tqe_prev; /* address of previous next element */
+    } list_pointers;
 } lxw_cell;
 
 /* *INDENT-OFF* */

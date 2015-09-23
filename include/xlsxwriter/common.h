@@ -10,7 +10,6 @@
 #define __LXW_COMMON_H__
 
 #include <time.h>
-#include "xlsxwriter/third_party/queue.h"
 
 #ifndef TESTING
 #define STATIC static
@@ -50,16 +49,24 @@ enum lxw_boolean {
     fprintf(stderr, "[WARN]: " message "\n")
 
 /* Define the queue.h structs for the formats list. */
-STAILQ_HEAD(lxw_formats, lxw_format);
+struct lxw_formats {
+    struct lxw_format *stqh_first;/* first element */
+    struct lxw_format **stqh_last;/* addr of last next element */
+};
 
 /* Define the queue.h structs for the generic data structs. */
-STAILQ_HEAD(lxw_tuples, lxw_tuple);
+struct lxw_tuples {
+    struct lxw_tuple *stqh_first;/* first element */
+    struct lxw_tuple **stqh_last;/* addr of last next element */
+};
 
 typedef struct lxw_tuple {
     char *key;
     char *value;
 
-    STAILQ_ENTRY (lxw_tuple) list_pointers;
+    struct {
+        struct lxw_tuple *stqe_next; /* next element */
+    } list_pointers;
 } lxw_tuple;
 
 typedef struct lxw_doc_properties {

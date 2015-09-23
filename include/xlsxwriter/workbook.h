@@ -43,7 +43,6 @@
 
 #include <stdint.h>
 #include <stdio.h>
-#include "xlsxwriter/third_party/queue.h"
 
 #include "worksheet.h"
 #include "shared_strings.h"
@@ -51,36 +50,16 @@
 #include "common.h"
 
 /* Define the queue.h structs for the workbook lists. */
-STAILQ_HEAD(lxw_worksheets, lxw_worksheet);
-TAILQ_HEAD(lxw_defined_names, lxw_defined_name);
+struct lxw_worksheets {
+    struct lxw_worksheet *stqh_first;/* first element */
+    struct lxw_worksheet **stqh_last;/* addr of last next element */
+};
+struct lxw_defined_names {
+    struct lxw_defined_name *tqh_first; /* first element */
+    struct lxw_defined_name **tqh_last; /* addr of last next element */
+};
 
 #define LXW_DEFINED_NAME_LENGTH 128
-
-/**
- * @brief Macro to loop over all the worksheets in a workbook.
- *
- * This macro allows you to loop over all the worksheets that have been
- * added to a workbook. You must provide a lxw_worksheet pointer and
- * a pointer to the lxw_workbook:
- *
- * @code
- *    lxw_workbook  *workbook = new_workbook("test.xlsx");
- *
- *    lxw_worksheet *worksheet; // Generic worksheet pointer.
- *
- *    // Worksheet objects used in the program.
- *    lxw_worksheet *worksheet1 = workbook_add_worksheet(workbook, NULL);
- *    lxw_worksheet *worksheet2 = workbook_add_worksheet(workbook, NULL);
- *    lxw_worksheet *worksheet3 = workbook_add_worksheet(workbook, NULL);
- *
- *    // Iterate over the 3 worksheets and perform the same operation on each.
- *    LXW_FOREACH_WORKSHEET(worksheet, workbook) {
- *        worksheet_write_string(worksheet, 0, 0, "Hello", NULL);
- *    }
- * @endcode
- */
-#define LXW_FOREACH_WORKSHEET(worksheet, workbook) \
-    STAILQ_FOREACH((worksheet), (workbook)->worksheets, list_pointers)
 
 /* Struct to represent a defined name. */
 typedef struct lxw_defined_name {
@@ -93,7 +72,10 @@ typedef struct lxw_defined_name {
     char normalised_sheetname[LXW_DEFINED_NAME_LENGTH];
 
     /* List pointers for queue.h. */
-    TAILQ_ENTRY (lxw_defined_name) list_pointers;
+    struct {
+        struct lxw_defined_name *tqe_next;  /* next element */
+        struct lxw_defined_name **tqe_prev; /* address of previous next element */
+    } list_pointers;
 } lxw_defined_name;
 
 /**

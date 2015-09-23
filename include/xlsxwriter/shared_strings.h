@@ -12,7 +12,6 @@
 
 #include <string.h>
 #include <stdint.h>
-#include "xlsxwriter/third_party/queue.h"
 
 #include "common.h"
 
@@ -37,8 +36,12 @@ struct sst_element {
     size_t index;
     char *string;
 
-    STAILQ_ENTRY (sst_element) sst_order_pointers;
-    SLIST_ENTRY (sst_element) sst_list_pointers;
+    struct {
+        struct sst_element *stqe_next; /* next element */
+    } sst_order_pointers;
+    struct {
+        struct sst_element *sle_next;  /* next element */
+    } sst_list_pointers;
 };
 
 /*

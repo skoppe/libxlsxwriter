@@ -10,7 +10,6 @@
 #ifndef __LXW_HASH_TABLE_H__
 #define __LXW_HASH_TABLE_H__
 
-#include "xlsxwriter/third_party/queue.h"
 #include "common.h"
 
 /* Macro to loop over hash table elements in insertion orfder. */
@@ -18,8 +17,13 @@
     STAILQ_FOREACH((elem), (hash_table)->order_list, lxw_hash_order_pointers)
 
 /* List declarations. */
-STAILQ_HEAD(lxw_hash_order_list, lxw_hash_element);
-SLIST_HEAD(lxw_hash_bucket_list, lxw_hash_element);
+struct lxw_hash_order_list {
+    struct lxw_hash_element *stqh_first;/* first element */
+    struct lxw_hash_element **stqh_last;/* addr of last next element */
+};
+struct lxw_hash_bucket_list {
+    struct lxw_hash_element *slh_first; /* first element */
+};
 
 /* LXW_HASH hash table struct. */
 typedef struct lxw_hash_table {
@@ -44,8 +48,12 @@ typedef struct lxw_hash_element {
     void *key;
     void *value;
 
-    STAILQ_ENTRY (lxw_hash_element) lxw_hash_order_pointers;
-    SLIST_ENTRY (lxw_hash_element) lxw_hash_list_pointers;
+    struct {
+        struct lxw_hash_element *stqe_next; /* next element */
+    } lxw_hash_order_pointers;
+    struct {
+        struct lxw_hash_element *sle_next;  /* next element */
+    } lxw_hash_list_pointers;
 } lxw_hash_element;
 
 
