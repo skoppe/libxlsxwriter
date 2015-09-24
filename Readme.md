@@ -1,3 +1,15 @@
+# Fork
+
+This fork is used to generate bindings to the [D](https://www.dlang.org) programming language.
+
+D can call C-code so only the `include/xlsxwriter.h` (and includes) have been translated. I used the nice htod tool from Digital Mars.
+
+Nothing much has changed except that I needed to removed references to `include/xlsxwriter/third_party/queue.h` since it was using  C macro's and they don't translate well to D.
+
+This fork breaks the normal build, because the headers files have been modified without modifications to the source files. For that reason I decided to remove the travis.yml file.
+
+I only use this to generate the xlsxwriter.d file and use that in other projects (more on that later...)
+
 # libxlsxwriter
 
 
