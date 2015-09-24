@@ -1,5 +1,5 @@
 /* Converted to D from xlsxwriter.h by htod */
-module xlsxwriter;
+module dexcel.c.xlsxwriter;
 /*
  * libxlsxwriter
  *
@@ -60,7 +60,7 @@ module xlsxwriter;
 //C     #define __LXW_WORKBOOK_H__
 
 //C     #include <stdint.h>
-import std.c.stdint;
+import std.stdint;
 //C     #include <stdio.h>
 import std.c.stdio;
 
@@ -112,10 +112,10 @@ import std.c.stdio;
 
 //C     #include <stdio.h>
 //C     #include <stdlib.h>
-import std.c.stdlib;
+//import std.c.stdlib;
 //C     #include <stdint.h>
 //C     #include <string.h>
-import std.c.string;
+//import std.c.string;
 
 //C     #include "shared_strings.h"
 /*
@@ -151,7 +151,7 @@ import std.c.time;
 //C     #ifndef TESTING
 //C     #define STATIC static
 //C     #else
-alias static STATIC;
+//alias static STATIC;
 //C     #define STATIC
 //C     #endif
 
@@ -358,7 +358,7 @@ struct lxw_sst
 /* *INDENT-ON* */
 
 //C     lxw_sst *_new_sst();
-lxw_sst * _new_sst(...);
+lxw_sst * _new_sst();
 //C     void _free_sst(lxw_sst *sst);
 void  _free_sst(lxw_sst *sst);
 //C     int32_t _get_sst_index(lxw_sst *sst, const char *string);
@@ -1470,7 +1470,7 @@ struct lxw_fill
 /* *INDENT-ON* */
 
 //C     lxw_format *_new_format();
-lxw_format * _new_format(...);
+lxw_format * _new_format();
 //C     void _free_format(lxw_format *format);
 void  _free_format(lxw_format *format);
 //C     int32_t _get_xf_index(lxw_format *format);
@@ -2870,6 +2870,25 @@ struct _N8
 {
     lxw_worksheet *stqe_next;
 }
+
+struct lxw_rel_tuples {
+    lxw_rel_tuple *stqh_first;
+    lxw_rel_tuple **stqh_last;
+}
+
+struct _N13
+{
+    lxw_rel_tuple *stqe_next; /* next element */
+}
+struct lxw_rel_tuple {
+
+    char *type;
+    char *target;
+    char *target_mode;
+
+    _N13 list_pointers;
+
+};
 
 //C     } lxw_worksheet;
 struct lxw_worksheet
